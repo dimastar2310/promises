@@ -1,4 +1,5 @@
 
+
 //import Promise from 'bluebird';
 
 
@@ -55,7 +56,7 @@ function manual() {
 //   Sequential processing 
 //------------------------------
 const countries = ["France","Russia","Germany","United Kingdom","Portugal","Spain","Netherlands","Sweden","Greece","Czechia","Romania","Israel","Picky"];
-
+// i need to put promise handler 
 function sequence() { //promise.foreach
 
   Promise.each(countries, item => {
@@ -75,27 +76,36 @@ function sequence() { //promise.foreach
     .then( originalArr => {
       marker.green('All tasks are done now...',originalArr);
     });
+    // .catch(err => {
+    //   // console.error('Error:', err.message);
+    //   marker.red('Error:', err.message);
+    // });
 
 }
-sequence();
+//sequence();
 
 //--------------------------------------------------------
 //  Parallel processing 
 //--------------------------------------------------------
-function parallel() {
+function parallel() { //much elegant way
   Promise.map(countries, country => {
     marker.info('start processing item', country);
 
-    return Promise.delay(Math.random() * 2000)
+    return Promise.delay(Math.random() * 500)
       .then(() => {
         return getCountryPopulation(country);
-      },{concurrency:3})
+      })
       .then(population => {
         marker.blue(`the population of ${country} is :`, population);
-      })
-      .catch(err => {
-        marker.red('Error:', err.message);
+      }, err => {
+        marker.red(`Error processing ${country}:`, err.message);
+        return null; // Return a null value or any other placeholder value to continue the chain
       });
-  });
+  }, { concurrency: 3 })
+    .then(resultArr => {
+      console.log('all tasks are done now...');
+    }, err => {
+      marker.red('Error:', err.message);
+    });
 }
-//parallel();
+parallel();

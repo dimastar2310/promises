@@ -75,7 +75,7 @@ function sequence() { //promise.foreach
   })
     .then( originalArr => {
       marker.green('All tasks are done now...',originalArr);
-    });
+    }); //if i put catch here and not inside i braking the loop
     // .catch(err => {
     //   // console.error('Error:', err.message);
     //   marker.red('Error:', err.message);
